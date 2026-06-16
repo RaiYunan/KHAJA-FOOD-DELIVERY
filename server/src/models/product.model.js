@@ -34,6 +34,16 @@ const productSchema = new mongoose.Schema(
       ref: 'User',
       required: true,
     },
+    averageRating: {
+      type: Number,
+      default: 0,
+      min: 0,
+      max: 5,
+    },
+    totalReviews: {
+      type: Number,
+      default: 0,
+    },
   },
   { timestamps: true }
 )
