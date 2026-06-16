@@ -8,6 +8,7 @@ import authRoutes from './routes/auth.routes.js'
 import productRoutes from './routes/product.routes.js'
 import adminRoutes from './routes/admin.routes.js'
 import reviewRoutes from './routes/review.routes.js'
+import profileRoutes from './routes/profile.routes.js'
 
 import errorHandler from './middlewares/error.middleware.js'
 import ApiError from './utils/ApiError.js'
@@ -32,6 +33,8 @@ app.use('/api/auth', authRoutes)
 app.use('/api/products', productRoutes)
 app.use('/api/admin', adminRoutes)
 app.use('/api/reviews', reviewRoutes)
+app.use('/api/reviews', reviewRoutes)
+app.use('/api/profile', profileRoutes)
 
 
 app.use((req, res, next) => {

@@ -3,18 +3,16 @@ import Product from '../models/product.model.js'
 import asyncHandler from '../utils/asyncHandler.js'
 import ApiError from '../utils/ApiError.js'
 
-// Create Review
+// Create review
 export const createReview = asyncHandler(async (req, res) => {
   const { rating, comment } = req.body
   const productId = req.params.productId
 
-  // check product exists
   const product = await Product.findById(productId)
   if (!product) {
     throw new ApiError(404, 'Product not found')
   }
 
-  // check if user already reviewed this product
   const existingReview = await Review.findOne({
     user: req.user._id,
     product: productId,
@@ -32,22 +30,17 @@ export const createReview = asyncHandler(async (req, res) => {
 
   await review.populate('user', 'name avatar')
 
-  res.status(201).json({
-    success: true,
-    review,
-  })
+  res.status(201).json({ success: true, review })
 })
 
 // Get all reviews for a product
 export const getProductReviews = asyncHandler(async (req, res) => {
-  const productId = req.params.productId
-
-  const product = await Product.findById(productId)
+  const product = await Product.findById(req.params.productId)
   if (!product) {
     throw new ApiError(404, 'Product not found')
   }
 
-  const reviews = await Review.find({ product: productId })
+  const reviews = await Review.find({ product: req.params.productId })
     .populate('user', 'name avatar')
     .sort({ createdAt: -1 })
 
@@ -60,7 +53,20 @@ export const getProductReviews = asyncHandler(async (req, res) => {
   })
 })
 
-// Update own review
+// Get single review
+export const getReview = asyncHandler(async (req, res) => {
+  const review = await Review.findById(req.params.id)
+    .populate('user', 'name avatar')
+    .populate('product', 'name image price')
+
+  if (!review) {
+    throw new ApiError(404, 'Review not found')
+  }
+
+  res.status(200).json({ success: true, review })
+})
+
+//  Update own review
 export const updateReview = asyncHandler(async (req, res) => {
   const { rating, comment } = req.body
 
@@ -69,9 +75,12 @@ export const updateReview = asyncHandler(async (req, res) => {
     throw new ApiError(404, 'Review not found')
   }
 
-  // only the review owner can update
   if (review.user.toString() !== req.user._id.toString()) {
     throw new ApiError(403, 'You can only update your own review')
+  }
+
+  if (rating && (rating < 1 || rating > 5)) {
+    throw new ApiError(400, 'Rating must be between 1 and 5')
   }
 
   review.rating = rating ?? review.rating
@@ -80,13 +89,10 @@ export const updateReview = asyncHandler(async (req, res) => {
 
   await review.populate('user', 'name avatar')
 
-  res.status(200).json({
-    success: true,
-    review,
-  })
+  res.status(200).json({ success: true, review })
 })
 
-// Delete own review (admin can delete any)
+// Delete review
 export const deleteReview = asyncHandler(async (req, res) => {
   const review = await Review.findById(req.params.id)
   if (!review) {
@@ -102,13 +108,10 @@ export const deleteReview = asyncHandler(async (req, res) => {
 
   await review.deleteOne()
 
-  res.status(200).json({
-    success: true,
-    message: 'Review deleted',
-  })
+  res.status(200).json({ success: true, message: 'Review deleted' })
 })
 
-// Get logged in user's reviews
+// Get my reviews
 export const getMyReviews = asyncHandler(async (req, res) => {
   const reviews = await Review.find({ user: req.user._id })
     .populate('product', 'name image price')
@@ -133,4 +136,16 @@ export const getAllReviews = asyncHandler(async (req, res) => {
     count: reviews.length,
     reviews,
   })
+})
+
+// Admin — delete any review
+export const adminDeleteReview = asyncHandler(async (req, res) => {
+  const review = await Review.findById(req.params.id)
+  if (!review) {
+    throw new ApiError(404, 'Review not found')
+  }
+
+  await review.deleteOne()
+
+  res.status(200).json({ success: true, message: 'Review deleted by admin' })
 })
