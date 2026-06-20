@@ -1,1 +1,25 @@
 @import "tailwindcss";
+
+@theme {
+  --color-cream: #FFFBF5;
+  --color-ink: #1A1410;
+  --color-chili: #C1432E;
+  --color-chili-dark: #9E3322;
+  --color-cardamom: #2D5A3D;
+  --color-turmeric: #E8A23D;
+  --color-clay: #D9CFC0;
+  --color-clay-light: #EFE8DC;
+
+  --font-display: 'Fraunces', serif;
+  --font-body: 'Manrope', sans-serif;
+}
+
+body {
+  background-color: var(--color-cream);
+  color: var(--color-ink);
+  font-family: var(--font-body);
+}
+
+.font-display {
+  font-family: var(--font-display);
+}
