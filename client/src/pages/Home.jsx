@@ -36,7 +36,7 @@ function Home() {
       {/* ── Hero ── */}
       <section className="relative px-6 pt-20 pb-24 md:pt-28 md:pb-32 max-w-5xl mx-auto">
         <p className="font-body text-sm tracking-[0.2em] uppercase text-chili font-semibold mb-6">
-          Biratnagar's table, delivered
+          Dharan's table, delivered
         </p>
 
         <h1 className="font-display text-[15vw] leading-[0.92] md:text-[6.5rem] font-bold text-ink tracking-tight">
@@ -54,7 +54,7 @@ function Home() {
           <p className="font-body text-ink/70 text-lg leading-relaxed">
             Momo from the corner steamer, sekuwa off the coal,
             dal bhat the way your hajurama makes it. No stock photos,
-            no fusion nonsense — just the menu Biratnagar already loves.
+            no fusion nonsense — just the menu Dharan already loves.
           </p>
         </div>
 

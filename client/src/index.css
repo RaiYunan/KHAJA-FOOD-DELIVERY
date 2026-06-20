@@ -1,5 +1,7 @@
 @import "tailwindcss";
 
+@custom-variant dark (&:where(.dark, .dark *));
+
 @theme {
   --color-cream: #FFFBF5;
   --color-ink: #1A1410;
@@ -10,14 +12,29 @@
   --color-clay: #D9CFC0;
   --color-clay-light: #EFE8DC;
 
+  --color-surface: #FFFBF5;
+  --color-surface-dark: #15110D;
+  --color-card: #FFFFFF;
+  --color-card-dark: #1F1A14;
+  --color-border: #D9CFC0;
+  --color-border-dark: #332B22;
+  --color-text: #1A1410;
+  --color-text-dark: #F5EFE5;
+
   --font-display: 'Fraunces', serif;
   --font-body: 'Manrope', sans-serif;
 }
 
 body {
-  background-color: var(--color-cream);
-  color: var(--color-ink);
+  background-color: var(--color-surface);
+  color: var(--color-text);
   font-family: var(--font-body);
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.dark body {
+  background-color: var(--color-surface-dark);
+  color: var(--color-text-dark);
 }
 
 .font-display {

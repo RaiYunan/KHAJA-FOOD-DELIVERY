@@ -61,7 +61,7 @@ function Register() {
           </div>
 
           <div className="relative z-10 font-body text-cream/60 text-sm">
-            Real Nepali food, from kitchens across Biratnagar.
+            Real Nepali food, from kitchens across Dharan.
           </div>
 
           <div className="absolute -bottom-16 -right-16 w-56 h-56 rounded-full border-20 border-cream/10" />
