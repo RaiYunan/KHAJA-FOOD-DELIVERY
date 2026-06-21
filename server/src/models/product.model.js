@@ -44,6 +44,20 @@ const productSchema = new mongoose.Schema(
       type: Number,
       default: 0,
     },
+    isVeg: {
+      type: Boolean,
+      required: [true, 'Please specify if the item is vegetarian'],
+      default: true,
+    },
+    spiceLevel: {
+      type: String,
+      enum: ['none', 'mild', 'medium', 'hot'],
+      default: 'none',
+    },
+    isPopular: {
+      type: Boolean,
+      default: false,
+    },
   },
   { timestamps: true }
 )
