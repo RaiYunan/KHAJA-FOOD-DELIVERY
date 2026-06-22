@@ -7,3 +7,4 @@ export const updateItemQuantity = (productId, quantity) =>
   api.put(`/cart/item/${productId}`, { quantity })
 export const removeItemFromCart = (productId) =>
   api.delete(`/cart/item/${productId}`)
+export const clearCart = () => api.delete('/cart/clear')

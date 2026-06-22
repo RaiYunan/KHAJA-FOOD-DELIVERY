@@ -1,5 +1,5 @@
-import { useEffect, useRef, useState } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import { useEffect, useRef, useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import {
   ShoppingBag,
   Moon,
@@ -10,60 +10,65 @@ import {
   LogOut,
   Menu,
   X,
-} from 'lucide-react'
-import { useAppDispatch, useAppSelector } from '@/app/hooks'
-import { logout } from '@/features/auth/authSlice'
-import { useTheme } from '@/context/ThemeContext'
+} from "lucide-react";
+import { useAppDispatch, useAppSelector } from "@/app/hooks";
+import { logout } from "@/features/auth/authSlice";
+import { useTheme } from "@/context/ThemeContext";
 
 const navLinks = [
-  { label: 'Menu', to: '/menu' },
-  { label: 'Orders', to: '/orders' },
-  { label: 'About', to: '/about' },
-]
+  { label: "Menu", to: "/menu" },
+  { label: "Orders", to: "/orders" },
+  { label: "About", to: "/about" },
+];
+
+
 
 function Navbar() {
-  const [dropdownOpen, setDropdownOpen] = useState(false)
-  const [mobileOpen, setMobileOpen] = useState(false)
-  const dropdownRef = useRef(null)
+  const [dropdownOpen, setDropdownOpen] = useState(false);
+  const [mobileOpen, setMobileOpen] = useState(false);
+  const dropdownRef = useRef(null);
 
-  const { theme, toggleTheme } = useTheme()
-  const dispatch = useAppDispatch()
-  const navigate = useNavigate()
+  const { theme, toggleTheme } = useTheme();
+  const dispatch = useAppDispatch();
+  const navigate = useNavigate();
 
-  const { user, isAuthenticated } = useAppSelector((state) => state.auth)
-  const { items } = useAppSelector((state) => state.cart)
-  const cartCount = items?.reduce((sum, item) => sum + item.quantity, 0) || 0
+  const { user, isAuthenticated } = useAppSelector((state) => state.auth);
+  const { items } = useAppSelector((state) => state.cart);
+  const cartCount = items?.reduce((sum, item) => sum + item.quantity, 0) || 0;
 
   useEffect(() => {
     const handleClickOutside = (e) => {
       if (dropdownRef.current && !dropdownRef.current.contains(e.target)) {
-        setDropdownOpen(false)
+        setDropdownOpen(false);
       }
-    }
-    document.addEventListener('mousedown', handleClickOutside)
-    return () => document.removeEventListener('mousedown', handleClickOutside)
-  }, [])
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
 
   const handleLogout = () => {
-    dispatch(logout())
-    setDropdownOpen(false)
-    navigate('/login')
-  }
+    dispatch(logout());
+    setDropdownOpen(false);
+    navigate("/login");
+  };
 
   const initials = user?.name
     ? user.name
-        .split(' ')
+        .split(" ")
         .map((n) => n[0])
         .slice(0, 2)
-        .join('')
+        .join("")
         .toUpperCase()
-    : ''
+    : "";
 
   return (
     <header className="sticky top-0 z-50 bg-cream/90 dark:bg-surface-dark/90 backdrop-blur-sm border-b border-ink/10 dark:border-border-dark">
       <nav className="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
         {/* Logo */}
-        <Link to="/" className="font-display text-xl font-bold text-ink dark:text-text-dark">
+        <Link
+          to="/"
+          className="font-display text-xl font-bold text-ink dark:text-text-dark"
+        >
           Khaja.
         </Link>
 
@@ -89,7 +94,7 @@ function Navbar() {
             aria-label="Toggle theme"
             className="p-2.5 rounded-full text-ink/70 dark:text-text-dark/70 hover:bg-clay-light dark:hover:bg-card-dark transition-colors cursor-pointer"
           >
-            {theme === 'dark' ? <Sun size={18} /> : <Moon size={18} />}
+            {theme === "dark" ? <Sun size={18} /> : <Moon size={18} />}
           </button>
 
           {/* Cart */}
@@ -101,7 +106,7 @@ function Navbar() {
             <ShoppingBag size={18} />
             {cartCount > 0 && (
               <span className="absolute -top-0.5 -right-0.5 bg-chili text-cream text-[10px] font-bold w-4 h-4 rounded-full flex items-center justify-center">
-                {cartCount > 9 ? '9+' : cartCount}
+                {cartCount > 9 ? "9+" : cartCount}
               </span>
             )}
           </Link>
@@ -120,7 +125,7 @@ function Navbar() {
                 <ChevronDown
                   size={14}
                   className={`text-ink/50 dark:text-text-dark/50 transition-transform ${
-                    dropdownOpen ? 'rotate-180' : ''
+                    dropdownOpen ? "rotate-180" : ""
                   }`}
                 />
               </button>
@@ -153,7 +158,7 @@ function Navbar() {
                     My orders
                   </Link>
 
-                  {user?.role === 'admin' && (
+                  {user?.role === "admin" && (
                     <Link
                       to="/admin"
                       onClick={() => setDropdownOpen(false)}
@@ -212,7 +217,7 @@ function Navbar() {
         </div>
       )}
     </header>
-  )
+  );
 }
 
-export default Navbar
+export default Navbar;

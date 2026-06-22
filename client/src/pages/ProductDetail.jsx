@@ -7,6 +7,7 @@ import {
   getProductById,
   clearSelectedProduct,
 } from '@/features/product/productSlice'
+import { addToCart } from '@/features/cart/cartSlice'
 
 const spiceDots = { none: 0, mild: 1, medium: 2, hot: 3 }
 
@@ -33,15 +34,15 @@ function ProductDetail() {
     return () => dispatch(clearSelectedProduct())
   }, [dispatch, id])
 
-  const handleAddToCart = () => {
-    if (!isAuthenticated) {
-      toast.error('Log in to add items to your cart')
-      navigate('/login')
-      return
-    }
-    // dispatch(addToCart({ productId: product._id, quantity }))
-    toast.success(`Added ${quantity} x ${product.name} to cart`)
+const handleAddToCart = async () => {
+  if (!isAuthenticated) {
+    toast.error('Log in to add items to your cart')
+    navigate('/login')
+    return
   }
+  await dispatch(addToCart({ productId: product._id, quantity }))
+  toast.success(`Added ${quantity} x ${product.name} to cart`)
+}
 
   if (selectedStatus === 'loading' || !product) {
     return <DetailSkeleton />
