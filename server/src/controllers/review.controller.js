@@ -111,6 +111,91 @@ export const deleteReview = asyncHandler(async (req, res) => {
   res.status(200).json({ success: true, message: 'Review deleted' })
 })
 
+// Toggle like on a review
+export const toggleLikeReview = asyncHandler(async (req, res) => {
+  const review = await Review.findById(req.params.id)
+  if (!review) {
+    throw new ApiError(404, 'Review not found')
+  }
+
+  const userId = req.user._id.toString()
+  const hasLiked = review.likes.some((id) => id.toString() === userId)
+
+  if (hasLiked) {
+    review.likes = review.likes.filter((id) => id.toString() !== userId)
+  } else {
+    review.likes.push(req.user._id)
+    review.dislikes = review.dislikes.filter((id) => id.toString() !== userId)
+  }
+
+  await review.save()
+
+  res.status(200).json({
+    success: true,
+    likes: review.likes,
+    dislikes: review.dislikes,
+  })
+})
+
+// Toggle dislike on a review
+export const toggleDislikeReview = asyncHandler(async (req, res) => {
+  const review = await Review.findById(req.params.id)
+  if (!review) {
+    throw new ApiError(404, 'Review not found')
+  }
+
+  const userId = req.user._id.toString()
+  const hasDisliked = review.dislikes.some((id) => id.toString() === userId)
+
+  if (hasDisliked) {
+    review.dislikes = review.dislikes.filter((id) => id.toString() !== userId)
+  } else {
+    review.dislikes.push(req.user._id)
+    review.likes = review.likes.filter((id) => id.toString() !== userId)
+  }
+
+  await review.save()
+
+  res.status(200).json({
+    success: true,
+    likes: review.likes,
+    dislikes: review.dislikes,
+  })
+})
+
+// Admin — add or update reply on a review
+export const replyToReview = asyncHandler(async (req, res) => {
+  const { comment } = req.body
+  if (!comment) {
+    throw new ApiError(400, 'Reply comment is required')
+  }
+
+  const review = await Review.findById(req.params.id)
+    .populate('user', 'name avatar')
+  if (!review) {
+    throw new ApiError(404, 'Review not found')
+  }
+
+  review.adminReply = { comment, repliedAt: new Date() }
+  await review.save()
+
+  res.status(200).json({ success: true, review })
+})
+
+// Admin — remove reply from a review
+export const deleteReviewReply = asyncHandler(async (req, res) => {
+  const review = await Review.findById(req.params.id)
+    .populate('user', 'name avatar')
+  if (!review) {
+    throw new ApiError(404, 'Review not found')
+  }
+
+  review.adminReply = undefined
+  await review.save()
+
+  res.status(200).json({ success: true, review })
+})
+
 // Get my reviews
 export const getMyReviews = asyncHandler(async (req, res) => {
   const reviews = await Review.find({ user: req.user._id })

@@ -1,20 +1,30 @@
-import { useEffect, useState } from 'react'
-import { Star, Pencil, Trash2 } from 'lucide-react'
-import { useAppDispatch, useAppSelector } from '@/app/hooks'
+import { useEffect, useState } from "react";
+import {
+  Star,
+  Pencil,
+  Trash2,
+  ThumbsUp,
+  ThumbsDown,
+  CornerDownRight,
+} from "lucide-react";
+import { useAppDispatch, useAppSelector } from "@/app/hooks";
 import {
   getProductReviews,
   createReview,
   updateReview,
   deleteReview,
-} from '@/features/review/reviewSlice'
+  likeReview,
+  dislikeReview,
+  replyToReview,
+} from "@/features/review/reviewSlice";
 
 function StarRating({ value, onChange, size = 20, readOnly = false }) {
-  const [hover, setHover] = useState(0)
+  const [hover, setHover] = useState(0);
 
   return (
     <div className="flex items-center gap-1">
       {[1, 2, 3, 4, 5].map((star) => {
-        const filled = readOnly ? star <= value : star <= (hover || value)
+        const filled = readOnly ? star <= value : star <= (hover || value);
         return (
           <button
             key={star}
@@ -23,45 +33,45 @@ function StarRating({ value, onChange, size = 20, readOnly = false }) {
             onClick={() => onChange?.(star)}
             onMouseEnter={() => !readOnly && setHover(star)}
             onMouseLeave={() => !readOnly && setHover(0)}
-            className={readOnly ? 'cursor-default' : 'cursor-pointer'}
+            className={readOnly ? "cursor-default" : "cursor-pointer"}
             aria-label={`${star} star`}
           >
             <Star
               size={size}
               className={
                 filled
-                  ? 'fill-turmeric text-turmeric'
-                  : 'text-ink/15 dark:text-text-dark/15'
+                  ? "fill-turmeric text-turmeric"
+                  : "text-ink/15 dark:text-text-dark/15"
               }
             />
           </button>
-        )
+        );
       })}
     </div>
-  )
+  );
 }
 
 function ReviewForm({ productId, existingReview, onDone }) {
-  const dispatch = useAppDispatch()
-  const [rating, setRating] = useState(existingReview?.rating || 0)
-  const [comment, setComment] = useState(existingReview?.comment || '')
-  const { actionStatus } = useAppSelector((state) => state.review)
+  const dispatch = useAppDispatch();
+  const [rating, setRating] = useState(existingReview?.rating || 0);
+  const [comment, setComment] = useState(existingReview?.comment || "");
+  const { actionStatus } = useAppSelector((state) => state.review);
 
   const handleSubmit = async (e) => {
-    e.preventDefault()
-    if (!rating) return
+    e.preventDefault();
+    if (!rating) return;
 
     if (existingReview) {
       await dispatch(
-        updateReview({ id: existingReview._id, productId, rating, comment })
-      )
+        updateReview({ id: existingReview._id, productId, rating, comment }),
+      );
     } else {
-      await dispatch(createReview({ productId, rating, comment }))
-      setRating(0)
-      setComment('')
+      await dispatch(createReview({ productId, rating, comment }));
+      setRating(0);
+      setComment("");
     }
-    onDone?.()
-  }
+    onDone?.();
+  };
 
   return (
     <form
@@ -69,7 +79,7 @@ function ReviewForm({ productId, existingReview, onDone }) {
       className="bg-clay-light dark:bg-card-dark rounded-lg p-5"
     >
       <p className="font-body text-sm font-semibold text-ink dark:text-text-dark mb-3">
-        {existingReview ? 'Edit your review' : 'Rate this dish'}
+        {existingReview ? "Edit your review" : "Rate this dish"}
       </p>
 
       <StarRating value={rating} onChange={setRating} size={24} />
@@ -87,10 +97,10 @@ function ReviewForm({ productId, existingReview, onDone }) {
       <div className="flex items-center gap-3 mt-4">
         <button
           type="submit"
-          disabled={!rating || actionStatus === 'loading'}
+          disabled={!rating || actionStatus === "loading"}
           className="bg-ink dark:bg-chili text-cream font-body text-sm font-semibold px-5 py-2.5 rounded-sm hover:bg-chili dark:hover:bg-chili-dark transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
         >
-          {existingReview ? 'Update review' : 'Post review'}
+          {existingReview ? "Update review" : "Post review"}
         </button>
 
         {existingReview && (
@@ -104,35 +114,78 @@ function ReviewForm({ productId, existingReview, onDone }) {
         )}
       </div>
     </form>
-  )
+  );
+}
+
+function AdminReplyForm({ reviewId, existingComment, onDone }) {
+  const dispatch = useAppDispatch();
+  const [comment, setComment] = useState(existingComment || "");
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    if (!comment.trim()) return;
+    dispatch(replyToReview({ id: reviewId, comment }));
+    onDone?.();
+  };
+
+  return (
+    <form onSubmit={handleSubmit} className="mt-3 ml-8">
+      <textarea
+        value={comment}
+        onChange={(e) => setComment(e.target.value)}
+        placeholder="Reply as Khaja..."
+        maxLength={500}
+        rows={2}
+        required
+        className="w-full bg-cream dark:bg-surface-dark rounded-sm p-2.5 font-body text-sm text-ink dark:text-text-dark placeholder:text-ink/30 dark:placeholder:text-text-dark/30 border border-ink/10 dark:border-border-dark focus:outline-none focus:border-chili resize-none"
+      />
+      <div className="flex items-center gap-3 mt-2">
+        <button
+          type="submit"
+          className="bg-ink dark:bg-chili text-cream font-body text-xs font-semibold px-4 py-2 rounded-sm hover:bg-chili dark:hover:bg-chili-dark transition-colors"
+        >
+          Post reply
+        </button>
+        <button
+          type="button"
+          onClick={onDone}
+          className="font-body text-xs font-medium text-ink/50 dark:text-text-dark/50 hover:text-ink dark:hover:text-text-dark"
+        >
+          Cancel
+        </button>
+      </div>
+    </form>
+  );
 }
 
 function avatarUrl(avatar) {
-  if (!avatar) return null
-  return avatar.startsWith('http')
+  if (!avatar) return null;
+  return avatar.startsWith("http")
     ? avatar
-    : `${import.meta.env.VITE_SOCKET_URL}${avatar}`
+    : `${import.meta.env.VITE_SOCKET_URL}${avatar}`;
 }
 
 function ReviewSection({ productId }) {
-  const dispatch = useAppDispatch()
-  const [editingId, setEditingId] = useState(null)
+  const dispatch = useAppDispatch();
+  const [editingId, setEditingId] = useState(null);
+  const [replyingId, setReplyingId] = useState(null);
 
   const { items, averageRating, totalReviews, status } = useAppSelector(
-    (state) => state.review
-  )
-  const { user, isAuthenticated } = useAppSelector((state) => state.auth)
+    (state) => state.review,
+  );
+  const { user, isAuthenticated } = useAppSelector((state) => state.auth);
 
   useEffect(() => {
-    dispatch(getProductReviews(productId))
-  }, [dispatch, productId])
+    dispatch(getProductReviews(productId));
+  }, [dispatch, productId]);
 
-  const myReview = items.find((r) => r.user._id === user?._id)
+  const myReview = items.find((r) => r.user._id === user?._id);
+  const isAdmin = user?.role === "admin";
 
   const handleDelete = (id) => {
-    if (!window.confirm('Delete this review?')) return
-    dispatch(deleteReview({ id, productId }))
-  }
+    if (!window.confirm("Delete this review?")) return;
+    dispatch(deleteReview({ id, productId }));
+  };
 
   return (
     <div className="max-w-5xl mx-auto px-6 pb-16">
@@ -171,13 +224,13 @@ function ReviewSection({ productId }) {
         </div>
       )}
 
-      {status === 'loading' && (
+      {status === "loading" && (
         <p className="font-body text-sm text-ink/40 dark:text-text-dark/40">
           Loading reviews...
         </p>
       )}
 
-      {status === 'succeeded' && items.length === 0 && (
+      {status === "succeeded" && items.length === 0 && (
         <p className="font-body text-sm text-ink/40 dark:text-text-dark/40">
           No reviews yet. Be the first to share your thoughts.
         </p>
@@ -186,62 +239,147 @@ function ReviewSection({ productId }) {
       <div className="flex flex-col gap-5 mt-2">
         {items
           .filter((r) => editingId !== r._id)
-          .map((review) => (
-            <div
-              key={review._id}
-              className="border-b border-ink/10 dark:border-border-dark pb-5"
-            >
-              <div className="flex items-start justify-between">
-                <div className="flex items-center gap-3">
-                  <div className="w-9 h-9 rounded-full bg-clay-light dark:bg-card-dark flex items-center justify-center font-body text-sm font-semibold text-ink dark:text-text-dark overflow-hidden">
-                    {review.user.avatar ? (
-                      <img
-                        src={avatarUrl(review.user.avatar)}
-                        alt={review.user.name}
-                        className="w-full h-full object-cover"
-                      />
-                    ) : (
-                      review.user.name?.[0]?.toUpperCase()
-                    )}
+          .map((review) => {
+            const liked = user && review.likes.includes(user._id);
+            const disliked = user && review.dislikes.includes(user._id);
+
+            return (
+              <div
+                key={review._id}
+                className="border-b border-ink/10 dark:border-border-dark pb-5"
+              >
+                <div className="flex items-start justify-between">
+                  <div className="flex items-center gap-3">
+                    <div className="w-9 h-9 rounded-full bg-clay-light dark:bg-card-dark flex items-center justify-center font-body text-sm font-semibold text-ink dark:text-text-dark overflow-hidden">
+                      {review.user.avatar ? (
+                        <img
+                          src={avatarUrl(review.user.avatar)}
+                          alt={review.user.name}
+                          className="w-full h-full object-cover"
+                        />
+                      ) : (
+                        review.user.name?.[0]?.toUpperCase()
+                      )}
+                    </div>
+                    <div>
+                      <p className="font-body text-sm font-semibold text-ink dark:text-text-dark">
+                        {review.user.name}
+                      </p>
+                      <StarRating value={review.rating} readOnly size={13} />
+                    </div>
                   </div>
-                  <div>
-                    <p className="font-body text-sm font-semibold text-ink dark:text-text-dark">
-                      {review.user.name}
-                    </p>
-                    <StarRating value={review.rating} readOnly size={13} />
-                  </div>
+
+                  {user?._id === review.user._id && (
+                    <div className="flex items-center gap-3">
+                      <button
+                        type="button"
+                        onClick={() => setEditingId(review._id)}
+                        className="text-ink/40 dark:text-text-dark/40 hover:text-ink dark:hover:text-text-dark"
+                        aria-label="Edit review"
+                      >
+                        <Pencil size={15} />
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => handleDelete(review._id)}
+                        className="text-ink/40 dark:text-text-dark/40 hover:text-chili"
+                        aria-label="Delete review"
+                      >
+                        <Trash2 size={15} />
+                      </button>
+                    </div>
+                  )}
                 </div>
 
-                {user?._id === review.user._id && (
-                  <div className="flex items-center gap-3">
-                    <button
-                      type="button"
-                      onClick={() => setEditingId(review._id)}
-                      className="text-ink/40 dark:text-text-dark/40 hover:text-ink dark:hover:text-text-dark"
-                      aria-label="Edit review"
-                    >
-                      <Pencil size={15} />
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => handleDelete(review._id)}
-                      className="text-ink/40 dark:text-text-dark/40 hover:text-chili"
-                      aria-label="Delete review"
-                    >
-                      <Trash2 size={15} />
-                    </button>
+                <p className="font-body text-sm text-ink/70 dark:text-text-dark/70 leading-relaxed mt-3">
+                  {review.comment}
+                </p>
+
+                <div className="flex items-center gap-4 mt-3">
+                  <button
+                    type="button"
+                    disabled={!isAuthenticated}
+                    onClick={() => dispatch(likeReview(review._id))}
+                    className={`flex items-center gap-1.5 font-body text-xs transition-colors disabled:opacity-40 ${
+                      liked
+                        ? "text-cardamom"
+                        : "text-ink/40 dark:text-text-dark/40 hover:text-ink dark:hover:text-text-dark"
+                    }`}
+                  >
+                    <ThumbsUp
+                      size={14}
+                      className={liked ? "fill-cardamom" : ""}
+                    />
+                    {review.likes.length}
+                  </button>
+
+                  <button
+                    type="button"
+                    disabled={!isAuthenticated}
+                    onClick={() => dispatch(dislikeReview(review._id))}
+                    className={`flex items-center gap-1.5 font-body text-xs transition-colors disabled:opacity-40 ${
+                      disliked
+                        ? "text-chili"
+                        : "text-ink/40 dark:text-text-dark/40 hover:text-ink dark:hover:text-text-dark"
+                    }`}
+                  >
+                    <ThumbsDown
+                      size={14}
+                      className={disliked ? "fill-chili" : ""}
+                    />
+                    {review.dislikes.length}
+                  </button>
+
+                  {isAdmin &&
+                    !review.adminReply?.comment &&
+                    replyingId !== review._id && (
+                      <button
+                        type="button"
+                        onClick={() => setReplyingId(review._id)}
+                        className="flex items-center gap-1.5 font-body text-xs text-ink/40 dark:text-text-dark/40 hover:text-ink dark:hover:text-text-dark"
+                      >
+                        <CornerDownRight size={14} />
+                        Reply
+                      </button>
+                    )}
+                </div>
+
+                {isAdmin && replyingId === review._id && (
+                  <AdminReplyForm
+                    reviewId={review._id}
+                    existingComment={review.adminReply?.comment}
+                    onDone={() => setReplyingId(null)}
+                  />
+                )}
+
+                {review.adminReply?.comment && replyingId !== review._id && (
+                  <div className="mt-3 ml-8 bg-clay-light dark:bg-card-dark rounded-sm p-3">
+                    <div className="flex items-center justify-between">
+                      <p className="font-body text-xs font-semibold text-cardamom">
+                        Reply from Khaja
+                      </p>
+                      {isAdmin && (
+                        <button
+                          type="button"
+                          onClick={() => setReplyingId(review._id)}
+                          className="text-ink/40 dark:text-text-dark/40 hover:text-ink dark:hover:text-text-dark"
+                          aria-label="Edit reply"
+                        >
+                          <Pencil size={13} />
+                        </button>
+                      )}
+                    </div>
+                    <p className="font-body text-sm text-ink/70 dark:text-text-dark/70 mt-1.5">
+                      {review.adminReply.comment}
+                    </p>
                   </div>
                 )}
               </div>
-
-              <p className="font-body text-sm text-ink/70 dark:text-text-dark/70 leading-relaxed mt-3">
-                {review.comment}
-              </p>
-            </div>
-          ))}
+            );
+          })}
       </div>
     </div>
-  )
+  );
 }
 
-export default ReviewSection
+export default ReviewSection;

@@ -24,6 +24,22 @@ const reviewSchema = new mongoose.Schema(
       trim: true,
       maxlength: [500, 'Comment cannot exceed 500 characters'],
     },
+    likes: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User',
+      },
+    ],
+    dislikes: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User',
+      },
+    ],
+    adminReply: {
+      comment: { type: String, trim: true, maxlength: 500 },
+      repliedAt: { type: Date },
+    },
   },
   { timestamps: true }
 )
