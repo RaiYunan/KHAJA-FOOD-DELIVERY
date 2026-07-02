@@ -65,6 +65,18 @@ const orderSlice = createSlice({
       state.currentOrder = null
       state.placeStatus = 'idle'
     },
+    updateOrderStatusRealtime: (state, action) => {
+      const { orderId, status, deliveredAt } = action.payload
+      const order = state.orders.find((o) => o._id === orderId)
+      if (order) {
+        order.status = status
+        if (deliveredAt) order.deliveredAt = deliveredAt
+      }
+      if (state.currentOrder?._id === orderId) {
+        state.currentOrder.status = status
+        if (deliveredAt) state.currentOrder.deliveredAt = deliveredAt
+      }
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -103,5 +115,5 @@ const orderSlice = createSlice({
   },
 })
 
-export const { setCurrentOrder, clearCurrentOrder } = orderSlice.actions
+export const { setCurrentOrder, clearCurrentOrder, updateOrderStatusRealtime } = orderSlice.actions
 export default orderSlice.reducer

@@ -92,8 +92,8 @@ function Checkout() {
         } catch {
           toast.error('Khalti initiation failed — try cash on delivery')
         }
-      } else {
-        navigate(`/orders/${order._id}?placed=true`)
+      }else {
+        navigate('/orders')
       }
     }
   }
