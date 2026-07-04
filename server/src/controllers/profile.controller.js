@@ -24,10 +24,8 @@ export const updateMyProfile = asyncHandler(async (req, res) => {
     throw new ApiError(404, 'User not found')
   }
 
-  // if new avatar uploaded, remove old one
   if (req.file) {
-    removeFile(user.avatar)
-    user.avatar = `/uploads/avatars/${req.file.filename}`
+    user.avatar = req.file.path
   }
 
   user.name = name ?? user.name
