@@ -1,10 +1,20 @@
 import { RouterProvider } from "react-router-dom";
 import { router } from "./routes/router";
-import useOrderSocket from '@/hooks/useOrderSocket'
+import { useEffect } from "react";
+import { useAppDispatch, useAppSelector } from "@/app/hooks";
+import { fetchMe } from "@/features/auth/authSlice";
+import useOrderSocket from "@/hooks/useOrderSocket";
 
 function App() {
-	useOrderSocket()
-	return <RouterProvider router={router} />;
+  const dispatch = useAppDispatch();
+  const { isAuthenticated } = useAppSelector((state) => state.auth);
+
+  useEffect(() => {
+    if (isAuthenticated) dispatch(fetchMe());
+  }, [dispatch, isAuthenticated]);
+
+  useOrderSocket();
+  return <RouterProvider router={router} />;
 }
 
 export default App;

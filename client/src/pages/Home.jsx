@@ -1,46 +1,59 @@
-import { ArrowRight, Flame, Leaf, Star } from 'lucide-react'
-import { Link } from 'react-router-dom'
-import { useAppSelector } from '@/app/hooks'
+import { ArrowRight, Flame, Leaf, Star } from "lucide-react";
+import { Link } from "react-router-dom";
+import { useAppSelector } from "@/app/hooks";
 
 const categories = [
-  { label: 'Momo & dumplings', count: 12 },
-  { label: 'Sekuwa & grill', count: 8 },
-  { label: 'Dal bhat sets', count: 6 },
-  { label: 'Newari khaja', count: 9 },
-  { label: 'Chiya & drinks', count: 7 },
-]
+  { label: "Momo & dumplings", count: 12 },
+  { label: "Sekuwa & grill", count: 8 },
+  { label: "Dal bhat sets", count: 6 },
+  { label: "Newari khaja", count: 9 },
+  { label: "Chiya & drinks", count: 7 },
+];
 
 const featured = [
   {
-    name: 'Chicken Sekuwa',
-    tag: 'Smoky favourite',
+    name: "Chicken Sekuwa",
+    tag: "Smoky favourite",
     price: 350,
     icon: Flame,
   },
   {
-    name: 'Veg Momo',
+    name: "Veg Momo",
     tag: "Chef's pick",
     price: 150,
     icon: Leaf,
   },
   {
-    name: 'Newari Khaja Set',
-    tag: 'Top rated',
+    name: "Newari Khaja Set",
+    tag: "Top rated",
     price: 450,
     icon: Star,
   },
-]
+];
 
 function Home() {
-  const { isAuthenticated, user } = useAppSelector((state) => state.auth)
+  const { isAuthenticated, user } = useAppSelector((state) => state.auth);
 
   return (
     <div className="bg-cream dark:bg-surface-dark transition-colors">
       {/* Hero */}
       <section className="relative px-6 pt-20 pb-24 md:pt-28 md:pb-32 max-w-5xl mx-auto">
-        <p className="font-body text-sm tracking-[0.2em] uppercase text-chili font-semibold mb-6">
+        <p className="font-body text-sm tracking-[0.2em] uppercase text-chili font-semibold mb-6 flex items-center gap-3">
+          {isAuthenticated && (
+            <span className="w-7 h-7 rounded-full bg-chili text-cream flex items-center justify-center overflow-hidden shrink-0 normal-case tracking-normal font-bold text-xs">
+              {user?.avatar ? (
+                <img
+                  src={user.avatar}
+                  alt={user.name}
+                  className="w-full h-full object-cover"
+                />
+              ) : (
+                user?.name?.[0]?.toUpperCase()
+              )}
+            </span>
+          )}
           {isAuthenticated
-            ? `Welcome back, ${user?.name?.split(' ')[0]}`
+            ? `Welcome back, ${user?.name?.split(" ")[0]}`
             : "Dharan's table, delivered"}
         </p>
 
@@ -69,13 +82,13 @@ function Home() {
             className="h-0.75 w-24 bg-chili mb-6"
             style={{
               maskImage:
-                'linear-gradient(90deg, black 0%, black 70%, transparent 100%)',
+                "linear-gradient(90deg, black 0%, black 70%, transparent 100%)",
             }}
           />
           <p className="font-body text-ink/70 dark:text-text-dark/70 text-lg leading-relaxed">
             {isAuthenticated
-              ? 'Pick up where you left off, or see what just landed on the board today.'
-              : 'Momo from the corner steamer, sekuwa off the coal, dal bhat the way your hajurama makes it. No stock photos, no fusion nonsense — just the menu Dharan already loves.'}
+              ? "Pick up where you left off, or see what just landed on the board today."
+              : "Momo from the corner steamer, sekuwa off the coal, dal bhat the way your hajurama makes it. No stock photos, no fusion nonsense — just the menu Dharan already loves."}
           </p>
         </div>
 
@@ -143,7 +156,7 @@ function Home() {
 
         <div className="grid md:grid-cols-3 gap-px bg-ink/10 dark:bg-border-dark border border-ink/10 dark:border-border-dark">
           {featured.map((item) => {
-            const Icon = item.icon
+            const Icon = item.icon;
             return (
               <Link
                 to="/menu"
@@ -165,12 +178,11 @@ function Home() {
                   Rs. {item.price}
                 </p>
               </Link>
-            )
+            );
           })}
         </div>
       </section>
 
-    
       {!isAuthenticated && (
         <section className="bg-ink dark:bg-card-dark text-cream px-6 py-16">
           <div className="max-w-5xl mx-auto flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
@@ -188,7 +200,7 @@ function Home() {
         </section>
       )}
     </div>
-  )
+  );
 }
 
-export default Home
+export default Home;

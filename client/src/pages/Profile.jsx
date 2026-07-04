@@ -15,6 +15,7 @@ import {
   Eye,
   EyeOff,
   AlertTriangle,
+  Loader2,
 } from "lucide-react";
 import { useAppSelector, useAppDispatch } from "@/app/hooks";
 import {
@@ -292,8 +293,8 @@ function Profile() {
   const [showDeleteModal, setShowDeleteModal] = useState(false);
 
   useEffect(() => {
-  dispatch(fetchMe());
-}, [dispatch]);
+    dispatch(fetchMe());
+  }, [dispatch]);
 
   useEffect(() => {
     dispatch(getMyOrders());
@@ -404,6 +405,11 @@ function Profile() {
                   {initials}
                 </span>
               )}
+              {status === "loading" && editing && (
+                <div className="absolute inset-0 bg-ink/60 flex items-center justify-center">
+                  <Loader2 size={20} className="text-cream animate-spin" />
+                </div>
+              )}
             </div>
             {editing && (
               <>
@@ -454,8 +460,15 @@ function Profile() {
                   disabled={status === "loading"}
                   className="inline-flex items-center gap-1.5 bg-ink dark:bg-chili text-cream font-body text-sm font-semibold px-5 py-2.5 rounded-sm hover:bg-chili transition-colors disabled:opacity-60"
                 >
-                  <Check size={15} />{" "}
-                  {status === "loading" ? "Saving…" : "Save"}
+                  {status === "loading" ? (
+                    <>
+                      <Loader2 size={15} className="animate-spin" /> Saving…
+                    </>
+                  ) : (
+                    <>
+                      <Check size={15} /> Save
+                    </>
+                  )}
                 </button>
                 <button
                   onClick={handleCancelEdit}

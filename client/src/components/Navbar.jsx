@@ -21,8 +21,6 @@ const navLinks = [
   { label: "About", to: "/about" },
 ];
 
-
-
 function Navbar() {
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -60,7 +58,7 @@ function Navbar() {
         .join("")
         .toUpperCase()
     : "";
-
+  const avatarUrl = user?.avatar;
   return (
     <header className="sticky top-0 z-50 bg-cream/90 dark:bg-surface-dark/90 backdrop-blur-sm border-b border-ink/10 dark:border-border-dark">
       <nav className="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
@@ -119,8 +117,16 @@ function Navbar() {
                 onClick={() => setDropdownOpen((o) => !o)}
                 className="flex items-center gap-2 pl-1 pr-2 py-1 rounded-full hover:bg-clay-light dark:hover:bg-card-dark transition-colors cursor-pointer"
               >
-                <span className="w-8 h-8 rounded-full bg-chili text-cream font-body font-semibold text-xs flex items-center justify-center">
-                  {initials}
+                <span className="w-8 h-8 rounded-full bg-chili text-cream font-body font-semibold text-xs flex items-center justify-center overflow-hidden">
+                  {avatarUrl ? (
+                    <img
+                      src={avatarUrl}
+                      alt={user?.name}
+                      className="w-full h-full object-cover"
+                    />
+                  ) : (
+                    initials
+                  )}
                 </span>
                 <ChevronDown
                   size={14}
