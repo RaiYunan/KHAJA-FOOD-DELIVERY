@@ -292,8 +292,8 @@ function Profile() {
   const [showDeleteModal, setShowDeleteModal] = useState(false);
 
   useEffect(() => {
-    if (!user) dispatch(fetchMe());
-  }, [dispatch, user]);
+  dispatch(fetchMe());
+}, [dispatch]);
 
   useEffect(() => {
     dispatch(getMyOrders());

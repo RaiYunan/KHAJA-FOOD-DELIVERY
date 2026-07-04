@@ -20,6 +20,7 @@ import AdminProducts from "@/pages/admin/AdminProducts";
 import ForgotPassword from "@/pages/ForgotPassword";
 import VerifyOTP from "@/pages/VerifyOTP";
 import ResetPassword from "@/pages/ResetPassword";
+import PaymentVerify from "@/pages/PaymentVerify";
 
 export const router = createBrowserRouter([
   {
@@ -45,6 +46,7 @@ export const router = createBrowserRouter([
           { path: "checkout", element: <Checkout /> },
           { path: "profile", element: <Profile /> },
           { path: "orders", element: <Orders /> },
+          { path: "payment/verify", element: <PaymentVerify /> },
         ],
       },
 
