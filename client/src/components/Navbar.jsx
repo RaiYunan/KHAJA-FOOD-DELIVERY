@@ -14,6 +14,7 @@ import {
 import { useAppDispatch, useAppSelector } from "@/app/hooks";
 import { logout } from "@/features/auth/authSlice";
 import { useTheme } from "@/context/ThemeContext";
+import logo from "@/assets/logo.png";
 
 const navLinks = [
   { label: "Menu", to: "/menu" },
@@ -63,11 +64,8 @@ function Navbar() {
     <header className="sticky top-0 z-50 bg-cream/90 dark:bg-surface-dark/90 backdrop-blur-sm border-b border-ink/10 dark:border-border-dark">
       <nav className="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
         {/* Logo */}
-        <Link
-          to="/"
-          className="font-display text-xl font-bold text-ink dark:text-text-dark"
-        >
-          Khaja.
+        <Link to="/" className="flex items-center">
+          <img src={logo} alt="Khaja" className="h-20 w-auto" />
         </Link>
 
         {/* Desktop links */}
