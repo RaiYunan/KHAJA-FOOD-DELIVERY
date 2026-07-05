@@ -6,6 +6,7 @@ import { Link, useNavigate } from 'react-router-dom'
 import { Eye, EyeOff, Loader2 } from 'lucide-react'
 import { useAppDispatch, useAppSelector } from '@/app/hooks'
 import { login } from '@/features/auth/authSlice'
+import logoLight from '@/assets/logo-light.png'
 
 const loginSchema = z.object({
   email: z.string().email('Enter a valid email'),
@@ -38,8 +39,8 @@ function Login() {
         {/* Left panel */}
         <div className="hidden md:flex flex-col justify-between bg-chili text-cream p-10 relative overflow-hidden">
           <div className="relative z-10">
-            <Link to="/" className="font-display text-xl font-bold">
-              Khaja.
+            <Link to="/">
+              <img src={logoLight} alt="Khaja" className="h-24 w-auto" />
             </Link>
           </div>
 

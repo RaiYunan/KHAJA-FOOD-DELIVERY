@@ -15,6 +15,7 @@ import {
   X,
   ChevronRight,
 } from 'lucide-react'
+import logoLight from '@/assets/logo-light.png'
 
 const navItems = [
   { label: 'Dashboard', to: '/admin',          icon: LayoutDashboard,  end: true },
@@ -43,7 +44,7 @@ function Sidebar({ onClose }) {
   return (
     <aside className="flex flex-col h-full bg-ink dark:bg-card-dark w-64 shrink-0">
       <div className="px-6 h-16 flex items-center border-b border-white/10">
-        <span className="font-display text-xl font-bold text-cream">Khaja.</span>
+        <img src={logoLight} alt="Khaja" className="h-16 w-auto" />
         <span className="ml-2 font-body text-xs text-cream/40 font-medium">admin</span>
         {onClose && (
           <button onClick={onClose} className="ml-auto text-cream/50 hover:text-cream transition-colors">
