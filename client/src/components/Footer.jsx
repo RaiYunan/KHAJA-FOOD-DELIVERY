@@ -1,9 +1,12 @@
 import { Link } from "react-router-dom";
 import { ArrowUpRight, MapPin, Heart } from "lucide-react";
-import logoLight from "@/assets/logo-light.png";
+import logo from '@/assets/logo.png'
+import logoLight from '@/assets/logo-light.png'
+import { useTheme } from '@/context/ThemeContext'
 
 function Footer() {
   const year = new Date().getFullYear();
+  const { theme } = useTheme()
 
   const scrollToTop = () => {
     window.scrollTo({ top: 0, behavior: "smooth" });
@@ -23,7 +26,7 @@ function Footer() {
           {/* Brand column */}
           <div className="md:col-span-5 space-y-4">
             <Link to="/">
-              <img src={logoLight} alt="Khaja" className="h-24 w-auto" />
+              <img src={theme === 'dark' ? logoLight : logo} alt="Khaja" className="h-24 w-auto" />
             </Link>
             <p className="font-body text-sm text-ink/50 dark:text-text-dark/50 leading-relaxed max-w-sm">
               Connecting you with authentic Nepali flavors, crafted in home

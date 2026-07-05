@@ -6,6 +6,8 @@ import { Link, useNavigate } from 'react-router-dom'
 import { Eye, EyeOff, Loader2 } from 'lucide-react'
 import { useAppDispatch, useAppSelector } from '@/app/hooks'
 import { login } from '@/features/auth/authSlice'
+import { useTheme } from '@/context/ThemeContext'
+import logo from '@/assets/logo.png'
 import logoLight from '@/assets/logo-light.png'
 
 const loginSchema = z.object({
@@ -18,6 +20,7 @@ function Login() {
   const dispatch = useAppDispatch()
   const navigate = useNavigate()
   const { status } = useAppSelector((state) => state.auth)
+  const { theme } = useTheme()
   const isLoading = status === 'loading'
 
   const {
@@ -34,8 +37,8 @@ function Login() {
   }
 
   return (
-    <div className="min-h-screen bg-cream flex items-center justify-center px-6 py-12">
-      <div className="w-full max-w-4xl grid md:grid-cols-2 border border-ink/10 rounded-sm overflow-hidden shadow-[0_1px_0_0_rgba(26,20,16,0.05)]">
+    <div className="min-h-screen bg-cream dark:bg-surface-dark flex items-center justify-center px-6 py-12 transition-colors">
+      <div className="w-full max-w-4xl grid md:grid-cols-2 border border-ink/10 dark:border-border-dark rounded-sm overflow-hidden shadow-[0_1px_0_0_rgba(26,20,16,0.05)]">
         {/* Left panel */}
         <div className="hidden md:flex flex-col justify-between bg-chili text-cream p-10 relative overflow-hidden">
           <div className="relative z-10">
@@ -61,11 +64,11 @@ function Login() {
         </div>
 
         {/* Form panel */}
-        <div className="bg-cream p-8 md:p-10 flex flex-col justify-center">
-          <h1 className="font-display text-3xl font-bold text-ink mb-1">
+        <div className="bg-cream dark:bg-card-dark p-8 md:p-10 flex flex-col justify-center transition-colors">
+          <h1 className="font-display text-3xl font-bold text-ink dark:text-text-dark mb-1">
             Log in
           </h1>
-          <p className="font-body text-ink/50 mb-8">
+          <p className="font-body text-ink/50 dark:text-text-dark/50 mb-8">
             Pick up right where you left off.
           </p>
 
@@ -94,7 +97,7 @@ function Login() {
                 <button
                   type="button"
                   onClick={() => setShowPassword((s) => !s)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-ink/40 hover:text-ink/70"
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-ink/40 dark:text-text-dark/40 hover:text-ink/70 dark:hover:text-text-dark/70"
                   tabIndex={-1}
                 >
                   {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
@@ -105,7 +108,7 @@ function Login() {
             <div className="flex justify-end -mt-2">
               <Link
                 to="/forgot-password"
-                className="font-body text-sm text-ink/50 hover:text-chili"
+                className="font-body text-sm text-ink/50 dark:text-text-dark/50 hover:text-chili"
               >
                 Forgot password?
               </Link>
@@ -114,14 +117,14 @@ function Login() {
             <button
               type="submit"
               disabled={isLoading}
-              className="w-full bg-ink text-cream font-body font-semibold py-3.5 rounded-sm hover:bg-chili transition-colors disabled:opacity-60 disabled:cursor-not-allowed flex items-center justify-center gap-2 mt-2"
+              className="w-full bg-ink dark:bg-chili text-cream font-body font-semibold py-3.5 rounded-sm hover:bg-chili dark:hover:bg-chili-dark transition-colors disabled:opacity-60 disabled:cursor-not-allowed flex items-center justify-center gap-2 mt-2"
             >
               {isLoading && <Loader2 size={18} className="animate-spin" />}
               Log in
             </button>
           </form>
 
-          <p className="font-body text-sm text-ink/50 text-center mt-6">
+          <p className="font-body text-sm text-ink/50 dark:text-text-dark/50 text-center mt-6">
             Don't have an account?{' '}
             <Link to="/register" className="text-chili font-semibold hover:text-chili-dark">
               Sign up
@@ -136,7 +139,7 @@ function Login() {
 function Field({ label, error, children }) {
   return (
     <div>
-      <label className="font-body text-sm font-medium text-ink/70 mb-1.5 block">
+      <label className="font-body text-sm font-medium text-ink/70 dark:text-text-dark/70 mb-1.5 block">
         {label}
       </label>
       {children}
@@ -146,9 +149,9 @@ function Field({ label, error, children }) {
 }
 
 function inputClass(error) {
-  return `w-full font-body bg-cream border ${
-    error ? 'border-chili' : 'border-ink/15'
-  } rounded-sm px-4 py-3 text-ink placeholder:text-ink/30 focus:outline-none focus:border-chili transition-colors`
+  return `w-full font-body bg-cream dark:bg-surface-dark border ${
+    error ? 'border-chili' : 'border-ink/15 dark:border-border-dark'
+  } rounded-sm px-4 py-3 text-ink dark:text-text-dark placeholder:text-ink/30 dark:placeholder:text-text-dark/30 focus:outline-none focus:border-chili transition-colors`
 }
 
 export default Login
